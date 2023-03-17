@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"server/channel"
+
+	"github.com/Veids/grdp2tcp/server/channel"
 
 	"github.com/hashicorp/yamux"
 	"github.com/things-go/go-socks5"

@@ -1,0 +1,5 @@
+syntax = "proto3";
+package commonpb;
+option go_package = "github.com/Veids/grdp2tcp/protobuf/commonpb";
+
+message Empty {}

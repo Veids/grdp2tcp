@@ -1,4 +1,4 @@
-module server
+module github.com/Veids/grdp2tcp/server
 
 go 1.20
 

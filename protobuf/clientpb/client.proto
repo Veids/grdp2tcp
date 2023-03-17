@@ -1,0 +1,24 @@
+syntax = "proto3";
+package clientpb;
+option go_package = "github.com/Veids/grdp2tcp/protobuf/clientpb";
+
+import "commonpb/common.proto";
+
+service ClientRpc {
+  // *** Socks ***
+  rpc SocksStart(Addr) returns (commonpb.Empty);
+  rpc SocksStop(Addr) returns (commonpb.Empty);
+
+
+  // *** Common ***
+  rpc List(commonpb.Empty) returns (EndpointList);
+}
+
+message Addr {
+  string ip = 1;
+  uint32 port = 2;
+}
+
+message EndpointList {
+  repeated string endpoints = 1;
+}
