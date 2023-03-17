@@ -9,6 +9,9 @@ service ClientRpc {
   rpc SocksStart(Addr) returns (commonpb.Empty);
   rpc SocksStop(Addr) returns (commonpb.Empty);
 
+  // *** Reverse ***
+  rpc ReverseStart(Addr, Addr) returns(commonpb.Empty);
+  rpc ReverseStop(Addr, Addr) returns(commonpb.Empty);
 
   // *** Common ***
   rpc List(commonpb.Empty) returns (EndpointList);

@@ -9,6 +9,10 @@ import (
 	"github.com/hashicorp/yamux"
 )
 
+const (
+	SOCKS byte = iota
+)
+
 type SocksServer struct {
 	listener net.Listener
 	quit     chan interface{}
@@ -46,6 +50,9 @@ func (s *SocksServer) Serve() {
 				log.Printf("Error opening stream for %s: %v", conn.RemoteAddr(), err)
 				panic(err)
 			}
+
+			//TODO: Handle write size
+			stream.Write([]byte{SOCKS})
 
 			go func() {
 				log.Printf("Starting to copy conn to stream for %s", conn.RemoteAddr())

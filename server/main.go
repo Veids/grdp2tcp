@@ -2,12 +2,37 @@ package main
 
 import (
 	"log"
+	"net"
 
 	"github.com/Veids/grdp2tcp/server/channel"
 
 	"github.com/hashicorp/yamux"
 	"github.com/things-go/go-socks5"
 )
+
+const (
+	SOCKS byte = iota
+)
+
+func handleStream(server *socks5.Server, stream net.Conn) {
+	//TODO: Handle read size
+	stype := make([]byte, 1)
+	stream.Read(stype)
+
+	switch stype[0] {
+	case SOCKS:
+		log.Println("Passing off to socks5")
+		go func() {
+			err := server.ServeConn(stream)
+			if err != nil {
+				log.Println(err)
+			}
+		}()
+	default:
+		log.Printf("Invalid stream type %d", stype[0])
+		stream.Close()
+	}
+}
 
 func main() {
 	var err error
@@ -24,17 +49,10 @@ func main() {
 
 	for {
 		stream, err := session.Accept()
-		log.Println("Stream accepted")
 		if err != nil {
 			panic(err)
 		}
-
-		log.Println("Passing off to socks5")
-		go func() {
-			err := server.ServeConn(stream)
-			if err != nil {
-				log.Println(err)
-			}
-		}()
+		log.Println("Stream accepted")
+		handleStream(server, stream)
 	}
 }

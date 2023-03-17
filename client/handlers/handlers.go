@@ -22,7 +22,6 @@ func NewClientRpcServer(session *yamux.Session) *ClientRpcServer {
 }
 
 func (s *ClientRpcServer) SocksStart(ctx context.Context, addr *clientpb.Addr) (*commonpb.Empty, error) {
-
 	address := fmt.Sprintf("%s:%d", addr.Ip, addr.Port)
 	s.socks.Lock()
 	defer s.socks.Unlock()
@@ -58,6 +57,14 @@ func (s *ClientRpcServer) SocksStop(ctx context.Context, addr *clientpb.Addr) (*
 	} else {
 		return nil, fmt.Errorf("Socks listener %s doesn't exist", address)
 	}
+	return &commonpb.Empty{}, nil
+}
+
+func (s *ClientRpcServer) ReverseStart(ctx context.Context, local_addr *clientpb.Addr, remote_addr *clientpb.Addr) (*commonpb.Empty, error) {
+	return &commonpb.Empty{}, nil
+}
+
+func (s *ClientRpcServer) Stop(ctx context.Context, local_addr *clientpb.Addr, remote_addr *clientpb.Addr) (*commonpb.Empty, error) {
 	return &commonpb.Empty{}, nil
 }
 
