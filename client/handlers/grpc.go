@@ -99,21 +99,16 @@ func (s *ClientRpcServer) ReverseStart(ctx context.Context, addrPack *commonpb.A
 
 func (s *ClientRpcServer) ReverseStop(ctx context.Context, remoteAddr *commonpb.Addr) (*commonpb.Empty, error) {
 	remote_address := fmt.Sprintf("%s:%d", remoteAddr.Ip, remoteAddr.Port)
-	log.Printf("Trying to stop reverse %s", remote_address)
 
 	s.reverse.dictionary.Lock()
-	log.Printf("Trying to stop reverse %s. Lock", remote_address)
 	defer s.reverse.dictionary.Unlock()
-	log.Printf("Trying to stop reverse %s. Unlock", remote_address)
 
 	if _, ok := s.reverse.dictionary.m[remote_address]; ok {
 		var reply string
-		log.Printf("Trying to stop reverse %s. Calling", remote_address)
 		err := s.control.Call("ServerRpcServer.ReverseStop", common.Addr{
 			Ip:   remoteAddr.Ip,
 			Port: remoteAddr.Port,
 		}, &reply)
-		log.Printf("Trying to stop reverse %s. Call done", remote_address)
 		if err != nil {
 			log.Printf("Failed to stop reverse handler on the server: %s %v", reply, err)
 		}

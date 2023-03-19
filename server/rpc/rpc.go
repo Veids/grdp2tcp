@@ -54,15 +54,11 @@ func (s *ServerRpcServer) ReverseStart(addr *common.Addr, reply *string) error {
 
 func (s *ServerRpcServer) ReverseStop(addr *common.Addr, reply *string) error {
 	address := fmt.Sprintf("%s:%d", addr.Ip, addr.Port)
-	log.Printf("Trying to stop listener %s", address)
 	s.reverse.Lock()
-	log.Printf("Trying to stop listener %s. Lock", address)
 	defer s.reverse.Unlock()
 
 	if val, ok := s.reverse.m[address]; ok {
-		log.Printf("Trying to stop listener %s. PreStop", address)
 		val.Stop()
-		log.Printf("Trying to stop listener %s. Stop", address)
 		delete(s.reverse.m, address)
 		log.Printf("Stopped reverse server on %s:%d\n", addr.Ip, addr.Port)
 	} else {
