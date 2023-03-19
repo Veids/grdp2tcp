@@ -24,8 +24,11 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ClientRpcClient interface {
 	// *** Socks ***
-	SocksStart(ctx context.Context, in *Addr, opts ...grpc.CallOption) (*commonpb.Empty, error)
-	SocksStop(ctx context.Context, in *Addr, opts ...grpc.CallOption) (*commonpb.Empty, error)
+	SocksStart(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error)
+	SocksStop(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error)
+	// *** Reverse ***
+	ReverseStart(ctx context.Context, in *commonpb.AddrPack, opts ...grpc.CallOption) (*commonpb.Empty, error)
+	ReverseStop(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error)
 	// *** Common ***
 	List(ctx context.Context, in *commonpb.Empty, opts ...grpc.CallOption) (*EndpointList, error)
 }
@@ -38,7 +41,7 @@ func NewClientRpcClient(cc grpc.ClientConnInterface) ClientRpcClient {
 	return &clientRpcClient{cc}
 }
 
-func (c *clientRpcClient) SocksStart(ctx context.Context, in *Addr, opts ...grpc.CallOption) (*commonpb.Empty, error) {
+func (c *clientRpcClient) SocksStart(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error) {
 	out := new(commonpb.Empty)
 	err := c.cc.Invoke(ctx, "/clientpb.ClientRpc/SocksStart", in, out, opts...)
 	if err != nil {
@@ -47,9 +50,27 @@ func (c *clientRpcClient) SocksStart(ctx context.Context, in *Addr, opts ...grpc
 	return out, nil
 }
 
-func (c *clientRpcClient) SocksStop(ctx context.Context, in *Addr, opts ...grpc.CallOption) (*commonpb.Empty, error) {
+func (c *clientRpcClient) SocksStop(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error) {
 	out := new(commonpb.Empty)
 	err := c.cc.Invoke(ctx, "/clientpb.ClientRpc/SocksStop", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientRpcClient) ReverseStart(ctx context.Context, in *commonpb.AddrPack, opts ...grpc.CallOption) (*commonpb.Empty, error) {
+	out := new(commonpb.Empty)
+	err := c.cc.Invoke(ctx, "/clientpb.ClientRpc/ReverseStart", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientRpcClient) ReverseStop(ctx context.Context, in *commonpb.Addr, opts ...grpc.CallOption) (*commonpb.Empty, error) {
+	out := new(commonpb.Empty)
+	err := c.cc.Invoke(ctx, "/clientpb.ClientRpc/ReverseStop", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +91,11 @@ func (c *clientRpcClient) List(ctx context.Context, in *commonpb.Empty, opts ...
 // for forward compatibility
 type ClientRpcServer interface {
 	// *** Socks ***
-	SocksStart(context.Context, *Addr) (*commonpb.Empty, error)
-	SocksStop(context.Context, *Addr) (*commonpb.Empty, error)
+	SocksStart(context.Context, *commonpb.Addr) (*commonpb.Empty, error)
+	SocksStop(context.Context, *commonpb.Addr) (*commonpb.Empty, error)
+	// *** Reverse ***
+	ReverseStart(context.Context, *commonpb.AddrPack) (*commonpb.Empty, error)
+	ReverseStop(context.Context, *commonpb.Addr) (*commonpb.Empty, error)
 	// *** Common ***
 	List(context.Context, *commonpb.Empty) (*EndpointList, error)
 }
@@ -80,11 +104,17 @@ type ClientRpcServer interface {
 type UnimplementedClientRpcServer struct {
 }
 
-func (UnimplementedClientRpcServer) SocksStart(context.Context, *Addr) (*commonpb.Empty, error) {
+func (UnimplementedClientRpcServer) SocksStart(context.Context, *commonpb.Addr) (*commonpb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SocksStart not implemented")
 }
-func (UnimplementedClientRpcServer) SocksStop(context.Context, *Addr) (*commonpb.Empty, error) {
+func (UnimplementedClientRpcServer) SocksStop(context.Context, *commonpb.Addr) (*commonpb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SocksStop not implemented")
+}
+func (UnimplementedClientRpcServer) ReverseStart(context.Context, *commonpb.AddrPack) (*commonpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReverseStart not implemented")
+}
+func (UnimplementedClientRpcServer) ReverseStop(context.Context, *commonpb.Addr) (*commonpb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReverseStop not implemented")
 }
 func (UnimplementedClientRpcServer) List(context.Context, *commonpb.Empty) (*EndpointList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
@@ -102,7 +132,7 @@ func RegisterClientRpcServer(s grpc.ServiceRegistrar, srv ClientRpcServer) {
 }
 
 func _ClientRpc_SocksStart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Addr)
+	in := new(commonpb.Addr)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -114,13 +144,13 @@ func _ClientRpc_SocksStart_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/clientpb.ClientRpc/SocksStart",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientRpcServer).SocksStart(ctx, req.(*Addr))
+		return srv.(ClientRpcServer).SocksStart(ctx, req.(*commonpb.Addr))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientRpc_SocksStop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Addr)
+	in := new(commonpb.Addr)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -132,7 +162,43 @@ func _ClientRpc_SocksStop_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/clientpb.ClientRpc/SocksStop",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientRpcServer).SocksStop(ctx, req.(*Addr))
+		return srv.(ClientRpcServer).SocksStop(ctx, req.(*commonpb.Addr))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientRpc_ReverseStart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(commonpb.AddrPack)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientRpcServer).ReverseStart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clientpb.ClientRpc/ReverseStart",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientRpcServer).ReverseStart(ctx, req.(*commonpb.AddrPack))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientRpc_ReverseStop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(commonpb.Addr)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientRpcServer).ReverseStop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clientpb.ClientRpc/ReverseStop",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientRpcServer).ReverseStop(ctx, req.(*commonpb.Addr))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -169,6 +235,14 @@ var ClientRpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SocksStop",
 			Handler:    _ClientRpc_SocksStop_Handler,
+		},
+		{
+			MethodName: "ReverseStart",
+			Handler:    _ClientRpc_ReverseStart_Handler,
+		},
+		{
+			MethodName: "ReverseStop",
+			Handler:    _ClientRpc_ReverseStop_Handler,
 		},
 		{
 			MethodName: "List",

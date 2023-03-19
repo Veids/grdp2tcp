@@ -6,20 +6,15 @@ import "commonpb/common.proto";
 
 service ClientRpc {
   // *** Socks ***
-  rpc SocksStart(Addr) returns (commonpb.Empty);
-  rpc SocksStop(Addr) returns (commonpb.Empty);
+  rpc SocksStart(commonpb.Addr) returns (commonpb.Empty);
+  rpc SocksStop(commonpb.Addr) returns (commonpb.Empty);
 
   // *** Reverse ***
-  rpc ReverseStart(Addr, Addr) returns(commonpb.Empty);
-  rpc ReverseStop(Addr, Addr) returns(commonpb.Empty);
+  rpc ReverseStart(commonpb.AddrPack) returns(commonpb.Empty);
+  rpc ReverseStop(commonpb.Addr) returns(commonpb.Empty);
 
   // *** Common ***
   rpc List(commonpb.Empty) returns (EndpointList);
-}
-
-message Addr {
-  string ip = 1;
-  uint32 port = 2;
 }
 
 message EndpointList {

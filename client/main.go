@@ -3,10 +3,12 @@ package main
 import (
 	"log"
 	"net"
+	"net/rpc"
 	"os"
 
 	"github.com/Veids/grdp2tcp/client/channel"
 	"github.com/Veids/grdp2tcp/client/handlers"
+	"github.com/Veids/grdp2tcp/common"
 	"github.com/Veids/grdp2tcp/protobuf/clientpb"
 
 	"github.com/hashicorp/yamux"
@@ -31,7 +33,16 @@ func main() {
 		panic(err)
 	}
 
-	s := handlers.NewClientRpcServer(session)
+	cstream, err := session.Open()
+	cstream.Write([]byte{common.CONTROL})
+	if err != nil {
+		panic(err)
+	}
+	control := rpc.NewClient(cstream)
+	reverse := handlers.NewReverseHandler(session)
+	go reverse.Serve()
+
+	s := handlers.NewClientRpcServer(session, control, &reverse)
 
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)

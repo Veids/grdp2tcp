@@ -6,11 +6,9 @@ import (
 	"net"
 	"sync"
 
-	"github.com/hashicorp/yamux"
-)
+	"github.com/Veids/grdp2tcp/common"
 
-const (
-	SOCKS byte = iota
+	"github.com/hashicorp/yamux"
 )
 
 type SocksServer struct {
@@ -52,7 +50,7 @@ func (s *SocksServer) Serve() {
 			}
 
 			//TODO: Handle write size
-			stream.Write([]byte{SOCKS})
+			stream.Write([]byte{common.SOCKS})
 
 			go func() {
 				log.Printf("Starting to copy conn to stream for %s", conn.RemoteAddr())

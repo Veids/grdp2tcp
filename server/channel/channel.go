@@ -31,7 +31,7 @@ func (c *channel) Init() {
 	wrappers.WTSVirtualChannelQuery(c.vc_handle, wrappers.WTSVirtualFileHandle, &pt1, &pbytesreturned)
 
 	c.vc_file_handle = windows.Handle(*pt1)
-	log.Printf("Obtained file handle %d with %d bytes!", c.vc_file_handle, pbytesreturned)
+	log.Printf("VC channel connected")
 }
 
 func (c *channel) Read(p []byte) (int, error) {
@@ -53,7 +53,6 @@ func (c *channel) Read(p []byte) (int, error) {
 		}
 	}
 
-	log.Println("Trying to read")
 	event, err := windows.WaitForSingleObject(overlapped.HEvent, windows.INFINITE)
 	if err != nil {
 		panic(err)
@@ -69,7 +68,7 @@ func (c *channel) Read(p []byte) (int, error) {
 		panic(err)
 	}
 
-	log.Printf("Read %d bytes", bytes_read)
+	// log.Printf("Read %d bytes", bytes_read)
 
 	return int(bytes_read), nil
 }
@@ -99,7 +98,6 @@ func (c *channel) Write(buf []byte) (int, error) {
 		}
 	}
 
-	log.Println("Trying to write")
 	event, err := windows.WaitForSingleObject(overlapped.HEvent, windows.INFINITE)
 	if err != nil {
 		panic(err)
@@ -114,7 +112,7 @@ func (c *channel) Write(buf []byte) (int, error) {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Wrote %d bytes", bytes_wrote)
+	// log.Printf("Wrote %d bytes", bytes_wrote)
 	return int(bytes_wrote), nil
 }
 

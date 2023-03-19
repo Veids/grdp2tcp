@@ -37,7 +37,7 @@ func (c *channel) Read(p []byte) (int, error) {
 			}
 			read += uint32(n)
 		}
-		log.Printf("Read %d bytes\n", read)
+		// log.Printf("Read %d bytes\n", read)
 		c.remaining = buf
 	}
 

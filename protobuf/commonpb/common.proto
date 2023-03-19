@@ -3,3 +3,13 @@ package commonpb;
 option go_package = "github.com/Veids/grdp2tcp/protobuf/commonpb";
 
 message Empty {}
+
+message Addr {
+  string ip = 1;
+  uint32 port = 2;
+}
+
+message AddrPack {
+  Addr local = 1;
+  Addr remote = 2;
+}
