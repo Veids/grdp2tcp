@@ -1,2 +1,5 @@
 client/client*
 server/server*
+Pipfile
+__pycache__
+.jython_cache
