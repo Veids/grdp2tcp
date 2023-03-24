@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net"
 	"net/rpc"
@@ -16,6 +17,8 @@ import (
 )
 
 func main() {
+	controlAddr := flag.String("c", "127.0.0.1:8337", "host:port")
+	flag.Parse()
 	log.SetOutput(os.Stderr)
 	log.SetFlags(log.Ldate | log.Lshortfile)
 
@@ -28,7 +31,7 @@ func main() {
 		panic(err)
 	}
 
-	lis, err := net.Listen("tcp", "127.0.0.1:8337")
+	lis, err := net.Listen("tcp", *controlAddr)
 	if err != nil {
 		panic(err)
 	}
