@@ -70,12 +70,14 @@ func (s *ReverseHandler) Connect(stream net.Conn, localAddr *string) {
 	if err != nil {
 		log.Printf("Failed to resolve reverse addr: %v", err)
 		stream.Close()
+		return
 	}
 
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
 		log.Printf("Failed to establish reverse tcp connection: %s", err)
 		stream.Close()
+		return
 	}
 
 	go func() {
