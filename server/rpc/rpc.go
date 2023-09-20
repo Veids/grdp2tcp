@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"reflect"
 
 	"github.com/Veids/grdp2tcp/common"
 
@@ -14,6 +15,8 @@ type ServerRpcServer struct {
 	session *yamux.Session
 	reverse ReverseServers
 }
+
+var _ = reflect.TypeOf(ServerRpcServer{})
 
 func NewServerRpcServer(session *yamux.Session) *ServerRpcServer {
 	return &ServerRpcServer{
