@@ -17,26 +17,12 @@ xfreerdp /v:{IP} /u:'{USER}' /p:'{PASS}' /rdp2tcp:$(pwd)/client
 ```powershell
 .\server.exe
 ```
-3. Use the grdp2tcp.py tool to operate the client.
+3. Use the fwctrl from [https://github.com/Veids/forwardlib](forwardlib) repository to operate the client.
+```bash
+pipx install git+https://github.com/Veids/forwardlib
+fwdctrl -h
+```
 
 ## Usage examples
-### Start/stop socks server
-```bash
-#by default targets 127.0.0.1:1080
-python grdp2tcp.py socks add
-python grdp2tcp.py socks rm
-#custom host:port
-python grdp2tcp.py socks add -l 127.0.0.1:1090
-python grdp2tcp.py socks rm -l 127.0.0.1:1090
-```
 
-### Start/stop reverse port forwarding
-```bash
-python grdp2tcp.py reverse add -l 127.0.0.1:8445 -r 127.0.0.1:8445
-python grdp2tcp.py reverse rm -l 127.0.0.1:8445 -r 127.0.0.1:8445
-```
-
-### List configured endpoints
-```bash
-python grdp2tcp.py list
-```
+[https://github.com/Veids/forwardlib](forwardlib)
