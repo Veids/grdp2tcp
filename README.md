@@ -17,7 +17,7 @@ xfreerdp /v:{IP} /u:'{USER}' /p:'{PASS}' /rdp2tcp:$(pwd)/client
 ```powershell
 .\server.exe
 ```
-3. Use the fwctrl from [https://github.com/Veids/forwardlib](forwardlib) repository to operate the client.
+3. Use the fwctrl from [forwardlib](https://github.com/Veids/forwardlib) repository to operate the client.
 ```bash
 pipx install git+https://github.com/Veids/forwardlib
 fwdctrl -h
@@ -25,4 +25,4 @@ fwdctrl -h
 
 ## Usage examples
 
-[https://github.com/Veids/forwardlib](forwardlib)
+[forwardlib](https://github.com/Veids/forwardlib)
