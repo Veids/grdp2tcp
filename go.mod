@@ -15,7 +15,7 @@ require (
 	github.com/pkg/sftp v1.13.6 // indirect
 	github.com/things-go/go-socks5 v0.0.4 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/net v0.16.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231002182017-d307bd883b97 // indirect
 	google.golang.org/grpc v1.58.2 // indirect
