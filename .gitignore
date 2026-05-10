@@ -1,5 +1,6 @@
 client/client*
 server/server*
+!server/server.ps1
 Pipfile
 __pycache__
 .jython_cache

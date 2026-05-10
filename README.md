@@ -17,6 +17,12 @@ xfreerdp /v:{IP} /u:'{USER}' /p:'{PASS}' /rdp2tcp:$(pwd)/client
 ```powershell
 .\server.exe
 ```
+Alternatively, run the PowerShell server implementation:
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File .\server\server.ps1
+```
+The PowerShell server supports the same `rdp2tcp` virtual channel handshake, yamux session handling, and SOCKS streams. It proxies SFTP streams to Windows OpenSSH `sftp-server.exe`, which the current Go client opens during startup; pass `-SftpServerPath C:\path\to\sftp-server.exe` if it is installed outside the default OpenSSH location. Reverse forwarding and Go-gob encoded local forwarding are not implemented in `server.ps1`.
+
 3. Use the fwctrl from [forwardlib](https://github.com/Veids/forwardlib) repository to operate the client.
 ```bash
 pipx install git+https://github.com/Veids/forwardlib
